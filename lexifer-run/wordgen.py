@@ -1,36 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# $Revision: 1.4 $
-# 
-# Copyright (c) 2015 William S. Annis
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-
-from distribution import WeightedSelector
 import random
 import re
 import math
-import SmartClusters as sc
 import codecs
 import textwrap
 import sys
+
+from . import smart_clusters as sc
+from .distribution import WeightedSelector
 
 
 class RuleError(Exception): pass
@@ -250,35 +226,9 @@ def textify(phsys, sentences=11):
             text += " " + phsys.generate(1, unsorted=True)[0]
             if j == comma:
                 text += ","
-        if random.randint(0, 100) <= 85:
+        if random.randint(0, 100) <= 90:
             text += ". "
         else:
             text += "? "
     text = textwrap.wrap(text, 70)
     return "\n".join(text)
-
-
-if __name__ == '__main__':
-    m1 = SoundSystem()
-    m1.add_ph_unit('V', 'a i á u o')
-    m1.add_ph_unit('C', 't n k l h ch m s ɬ p š')
-    m1.add_ph_unit('F', 'n l s')
-    m1.add_sort_order('a á ch h i k l ɬ m n o p s š t u y')
-    m1.add_filter(r'hy', r'š')
-    m1.add_filter(r'(lł|lł)', r'l')
-    m1.add_filter(r's(t|k)', r'\1s')
-    m1.add_filter(r'nn|ll|ss|sš', 'REJECT')
-    m1.add_rule('V?Cy?VF?', 5)
-    m1.add_rule('V?CVF?CV', 7)
-
-#print(m1.phonemeset)
-#print(m1.run_rule('CVC?'))
-#n = console.input_alert('wordgen', 'How many words?', '100')
-    n = 50
-    utf8stdout = open(1, 'w', encoding='utf-8', closefd=False)
-    print(' '.join(m1.generate(int(n))), file=utf8stdout)
-    print()
-    print(textify(m1), file=utf8stdout)
-#print(m1.apply_filters('alła'))
-#print(m1.apply_filters('isti'))
-#print(m1.apply_filters('lassa'))

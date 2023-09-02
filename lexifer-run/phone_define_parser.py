@@ -1,31 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# $Revision: 1.7 $
-# 
-# Copyright (c) 2015-2016 William S. Annis
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 import codecs
 import re
 import sys
-from wordgen import textify
+
+from .wordgen import textify
 
 
 class UnknownOption(Exception): pass
@@ -150,7 +127,7 @@ class PhonologyDefinition(object):
         # Width of all rows must be 'n'.
         n = len(c2list)
         line = fh.readline()
-        while line not in ('', '\n'):
+        while line not in ('','\n','\r\n'):
             # filter comments
             line = re.sub(r'#.*', '', line)   # comments
             line = line.strip()
@@ -169,9 +146,9 @@ class PhonologyDefinition(object):
                     else:
                         self.add_filter(c1 + c2list[i], result)
             elif len(row) > n:
-                raise ParseError("Cluster field row too long: " + line)
+                raise ParseError(f"Cluster field row too long: {line}")
             else:
-                raise ParseError("Cluster field row too short: " + line)
+                raise ParseError(f"Cluster field row too short: {line}")
             line = fh.readline()
 
     def parse_random_rate(self, line):
@@ -193,15 +170,3 @@ class PhonologyDefinition(object):
 
     def paragraph(self, sentences):
         return textify(self.soundsys, sentences)
-    
-
-if __name__ == '__main__':
-    from wordgen import SoundSystem, textify
-    
-    pd = PhonologyDefinition(SoundSystem(), "test.def")
-    #print(textify(pd.soundsys, 25))
-
-    # Nasty hack to make print() stop whining about ascii.
-    utf8stdout = open(1, 'w', encoding='utf-8', closefd=False)
-    print(pd.paragraph(15), file=utf8stdout)
-    #print(pd.generate(50))

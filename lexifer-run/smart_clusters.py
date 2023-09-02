@@ -1,33 +1,3 @@
-#!/usr/bin/env python   # -*- coding: utf-8 -*-
-# $Revision: 1.4 $
-
-# 
-# Copyright (c) 2015 William S. Annis
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-"""
-Perform certain kinds of word fixing from basic phonological
-knowledge, stored in the form of a SQL database, which I abuse
-horribly to get the answers I want.
-"""
-
 import sqlite3 as sql
 global phdb
 
@@ -94,7 +64,7 @@ def initialize(notation="ipa"):
         for (ignore, ph, v, p, m) in DATA:
             c.execute("insert into phdb values (?,?,?,?)", (ph, v, p, m))
     else:
-        raise Error("Unknown notation: %s" % notation)
+        raise Exception("Unknown notation: %s" % notation)
     phdb.commit()
 
 def nasal_assimilate(ph1, ph2):
@@ -155,13 +125,3 @@ def apply_coronal_metathesis(word):
     for i in range(len(word) - 1):
         new[i], new[i+1] = coronal_metathesis(word[i], word[i+1])
     return new
-
-# Testing...
-if __name__ == '__main__':
-    initialize()
-    #word1 = [u'a', u't', u'b', u'a', u'h', u'u', u'n', u'b', u'i']
-    word1 = ['a', 'tʃ', 'b', 'a', 'h', 'u', 'n', 'b', 'i']
-    print(word1)
-    word2 = apply_assimilations(word1)
-    print(word2)
-    print(apply_coronal_metathesis(word2))

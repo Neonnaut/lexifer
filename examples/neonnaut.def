@@ -1,0 +1,31 @@
+with: std-ipa-features coronal-metathesis
+
+letters: m n ɲ ŋ l p t k s h b d g r a e i o u y w ʔ
+         
+
+C = t n k m l r d h s w b y p ɲ g ŋ
+D = ŋ ʔ
+V = a i e u o
+
+$S = CVD?
+
+words:  V?$SV?$S V?$S V?$SV? V?$S$S$S V?$S$S$SV?$S
+
+## Vowel clusters
+## aa, ai, ee, ei, ii, ie, io, oo, ua, uo, 
+% a  e  i  o  u 
+a +  -  -  -  +
+e -  +  +  -  -
+i +  +  +  -  -
+o -  -  +  +  +
+u -  -  -  -  -
+
+## Final-consonant - consonant assimilation rules
+% m  n  ɲ  ŋ  l  p  t  k  s  h  b  d  g  r  y  w
+ʔ +  +  +  +  +  pp tt kk ss +  +  +  +  +  +  -
+ŋ mm nn ɲɲ ŋŋ ll mp nt +  ns ŋŋ mb nd +  nr ɲɲ +
+
+# haplology
+reject: (..+)\1+
+
+reject: wu yi VVʔ
