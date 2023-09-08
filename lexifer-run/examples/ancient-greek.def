@@ -1,0 +1,10 @@
+with: std-ipa-features
+
+letters: pʰ tʰ kʰ p t k b d ɡ m n s h l r ii yy uu ee ɛɛ ɔɔ aa
+
+C = pʰ tʰ kʰ p t k b d ɡ m n s h l r
+V = i y u e o a ii yy uu ee ɛɛ ɔɔ aa
+
+$S = CV
+
+words: $S

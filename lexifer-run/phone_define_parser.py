@@ -2,8 +2,7 @@ import codecs
 import re
 import sys
 
-from .wordgen import textify
-
+import wordgen
 
 class UnknownOption(Exception): pass
 
@@ -11,21 +10,24 @@ class ParseError(Exception): pass
 
 
 class PhonologyDefinition(object):
-    def __init__(self, soundsys, fname):
-        """Expects a SoundSystem instance for the first argument."""
-        self.soundsys = soundsys
-        self.fname = fname
-        self.options = []
+    def __init__(self, file_name):
+        """Expects a sound_systemtem instance for the first argument."""
+        self.sound_system = wordgen.SoundSystem()
+        self.file_name = file_name
         self.features = []
-        self.macros = {}
+        self.macros = {} # The '$S' things
         # For sanity checking at the end
         self.letters = []
         self.ph_classes = []   # phoneme classes
         self.parse()
         self.sanity_check()
 
+        self.no_of_words = None
+        self.one_per_line = False
+        self.sorted = False
+
     def parse(self):
-        with codecs.open(self.fname, encoding='utf-8') as f:
+        with codecs.open(self.file_name, encoding='utf-8') as f:
             # The loop over the file is handled this way to let me
             # pass in the file handle to a subparser.
             line = f.readline()
@@ -47,6 +49,8 @@ class PhonologyDefinition(object):
                     self.parse_words(line[6:].strip())
                 elif re.match(r'letters:', line):
                     self.parse_letters(line[8:].strip())
+                elif re.match(r'number of words:', line):
+                    self.no_of_words = line[16:].strip()
                 elif line[0] == '%':
                     self.parse_clusterfield(line, f)
                 elif '=' in line:
@@ -55,7 +59,7 @@ class PhonologyDefinition(object):
                     raise ParseError(line)
                 line = f.readline()
         # A non-fatal bit of sanity checking and warning.
-        if (self.soundsys.use_assim or self.soundsys.use_coronal_metathesis) and self.soundsys.sorter is None:
+        if (self.sound_system.use_assim or self.sound_system.use_coronal_metathesis) and self.sound_system.sorter is None:
             sys.stderr.write("Without 'letters:' cannot apply assimilations or coronal metathesis.\n\n")
 
 # add option to remove: ji, wu, bw, dl, etc. forbid onset
@@ -64,14 +68,14 @@ class PhonologyDefinition(object):
         for option in line.split():
             if option == 'std-ipa-features':
                 #print "Loaded IPA..."
-                self.soundsys.use_ipa()
+                self.sound_system.use_ipa()
             elif option == 'std-digraph-features':
-                self.soundsys.use_digraphs()
+                self.sound_system.use_digraphs()
             elif option == 'std-assimilations':
                 #print "Loaded assimilations..."
-                self.soundsys.with_std_assimilations()
+                self.sound_system.with_std_assimilations()
             elif option == 'coronal-metathesis':
-                self.soundsys.with_coronal_metathesis()
+                self.sound_system.with_coronal_metathesis()
             else:
                 raise UnknownOption(option)    
 
@@ -80,7 +84,7 @@ class PhonologyDefinition(object):
         #pre = pre.replace("\\", "\\\\")
         post = post.strip()
         #post = post.replace("\\", "\\\\")
-        self.soundsys.add_filter(pre, post)
+        self.sound_system.add_filter(pre, post)
         
     def parse_filter(self, line):
         for filt in line.split(";"):
@@ -95,17 +99,17 @@ class PhonologyDefinition(object):
 
     def parse_reject(self, line):
         for filt in line.split():
-            self.soundsys.add_filter(filt, 'REJECT')
+            self.sound_system.add_filter(filt, 'REJECT')
 
     def parse_letters(self, line):
         self.letters = line.split()
-        self.soundsys.add_sort_order(line)
+        self.sound_system.add_sort_order(line)
 
     def parse_words(self, line):
         line = self.expand_macros(line)
         for (n, word) in enumerate(line.split()):
             # Crude Zipf distribution for word selection.
-            self.soundsys.add_rule(word, 10.0 / ((n + 1) ** .9))
+            self.sound_system.add_rule(word, 10.0 / ((n + 1) ** .9))
 
     def expand_macros(self, word):
         for (macro, value) in list(self.macros.items()):
@@ -120,7 +124,7 @@ class PhonologyDefinition(object):
             self.macros["\\" + sclass] = values
         else:
             self.ph_classes += values.split()
-            self.soundsys.add_ph_unit(sclass, values)
+            self.sound_system.add_ph_unit(sclass, values)
 
     def parse_clusterfield(self, line, fh):
         c2list = line.split()[1:]  # ignore leading %
@@ -142,7 +146,7 @@ class PhonologyDefinition(object):
                     if result == '+':
                         continue
                     if result == '-':
-                        self.soundsys.add_filter(c1 + c2list[i], 'REJECT')
+                        self.sound_system.add_filter(c1 + c2list[i], 'REJECT')
                     else:
                         self.add_filter(c1 + c2list[i], result)
             elif len(row) > n:
@@ -152,7 +156,7 @@ class PhonologyDefinition(object):
             line = fh.readline()
 
     def parse_random_rate(self, line):
-        self.soundsys.randpercent = int(line)
+        self.sound_system.randpercent = int(line)
 
     def sanity_check(self):
         # Can't do sanity checking if the letters: directive isn't used.
@@ -166,7 +170,4 @@ class PhonologyDefinition(object):
             sys.stderr.write("** Strange word shapes are likely to result.\n")
 
     def generate(self, n=1, unsorted=False):
-        return self.soundsys.generate(n, unsorted)
-
-    def paragraph(self, sentences):
-        return textify(self.soundsys, sentences)
+        return self.sound_system.generate(n, unsorted)

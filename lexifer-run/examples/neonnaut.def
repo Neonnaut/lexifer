@@ -1,22 +1,25 @@
 with: std-ipa-features coronal-metathesis
 
-letters: m n ɲ ŋ l p t k s h b d g r a e i o u y w ʔ
+letters: a b d e g h i k l m n ñ ŋ o p r s t u w y ʔ
          
 
-C = t n k m l r d h s w b y p ɲ g ŋ
+C = t n k m l r d h s w b y p ñ g ŋ
 D = ŋ ʔ
 V = a i e u o
 
 $S = CVD?
+$Z = C?VD?
 
-words:  V?$SV?$S V?$S V?$SV? V?$S$S$S V?$S$S$SV?$S
+words: $Z?$SV?$S $Z?$S V?$S$Z? V?$S$S$S V?$S$S$S$Z?$S
 
-## Vowel clusters
-## aa, ai, ee, ei, ii, ie, io, oo, ua, uo, 
+number of words: 5
+
+## Vowel clusters / allowed hiatus
+## aa, ai, ee, ei, ia, ie, io, oo, ua, uo, 
 % a  e  i  o  u 
-a +  -  -  -  +
+a +  -  +  -  +
 e -  +  +  -  -
-i +  +  +  -  -
+i +  +  -  -  -
 o -  -  +  +  +
 u -  -  -  -  -
 

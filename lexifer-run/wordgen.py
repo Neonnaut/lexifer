@@ -1,15 +1,15 @@
 import random
 import re
 import math
-import codecs
 import textwrap
 import sys
 
-from . import smart_clusters as sc
-from .distribution import WeightedSelector
+import smart_clusters as sc
+from distribution import WeightedSelector
 
 
-class RuleError(Exception): pass
+class RuleError(Exception):
+    pass
 
 
 # Define an arbitrary sort order, in unicode and possibly including
@@ -69,12 +69,16 @@ def select(dic):
 
 # Give approximately natural frequencies to phonemes.
 # Gusein-Zade law.
+
+
 def jitter(v, percent=10.0):
     move = v * (percent / 100.0)
     return v + (random.random() * move) - (move / 2)
 
 # Takes a whitespace delimited string, returns a string
 # in the form expected by SoundSystem.add_ph_unit().
+
+
 def natural_weights(phonemes):
     p = phonemes.split()
     n = len(p)
@@ -82,6 +86,7 @@ def natural_weights(phonemes):
     for i in range(n):
         weighted[p[i]] = jitter((math.log(n + 1) - math.log(i + 1)) / n)
     return ' '.join(['%s:%.2f' % (p, v) for (p, v) in list(weighted.items())])
+
 
 def rule2dict(rule):
     items = rule.split()
@@ -108,7 +113,7 @@ class SoundSystem:
         # add natural weights if there's no weighting.
         if ':' not in selection:
             selection = natural_weights(selection)
-            #print('%s = %s' % (name, selection))
+            # print('%s = %s' % (name, selection))
         self.phonemeset[name] = WeightedSelector(rule2dict(selection))
 
     def add_rule(self, rule, weight):
@@ -122,16 +127,17 @@ class SoundSystem:
         s = []
         for i in range(n):
             # Skip control characters.
-            if rule[i] in ['?', '!']: continue
+            if rule[i] in ['?', '!']:
+                continue
             # Sound that occurs optionally at random.
-            if i<(n-1) and rule[i+1] == '?':
+            if i < (n-1) and rule[i+1] == '?':
                 if random.randint(0, 100) < self.randpercent:
-                    if rule[i] in self.phonemeset: # phoneme class
+                    if rule[i] in self.phonemeset:  # phoneme class
                         s.append(self.phonemeset[rule[i]].select())
-                    else: # literal
+                    else:  # literal
                         s.append(rule[i])
             # Sound that must not duplicate the previous sound.
-            elif i<(n-1) and i > 0 and rule[i+1] == "!":
+            elif i < (n-1) and i > 0 and rule[i+1] == "!":
                 # First, if the previous class was optional, we need
                 # to skip back one more to check against the class
                 # rather than the '?'.
@@ -142,18 +148,20 @@ class SoundSystem:
                     #                if (rule[i] != rule[i-1]):
                 # Make sure this is even a duplicate environment.
                 if (rule[i] != prevc):
-                    raise RuleError("Misplaced '!' option: in non-duplicate environment: {}.".format(rule))
+                    raise RuleError(
+                        "Misplaced '!' option: in non-duplicate environment: {}.".format(rule))
                 if rule[i] in self.phonemeset:
                     nph = self.phonemeset[rule[i]].select()
                     while nph == s[-1]:
                         nph = self.phonemeset[rule[i]].select()
                     s.append(nph)
                 else:
-                    raise RuleError("Use of '!' here makes no sense: {}".format(rule))
+                    raise RuleError(
+                        "Use of '!' here makes no sense: {}".format(rule))
             # Just a normal sound.
             elif rule[i] in self.phonemeset:
                 s.append(self.phonemeset[rule[i]].select())
-            else: # literal
+            else:  # literal
                 s.append(rule[i])
         return "".join(s)
 
@@ -161,7 +169,7 @@ class SoundSystem:
         if repl == '!':
             self.filters.append((pat, ""))
         else:
-            self.filters.append((pat, repl))    
+            self.filters.append((pat, repl))
 
     def apply_filters(self, word):
         # First, if assimilations and metathesis are in play, apply those.
@@ -197,12 +205,22 @@ class SoundSystem:
 
     def generate(self, n=10, unsorted=False):
         """Generate n unique words randomly from the rules."""
+        # Need to stop the while loop if there are no more combinations
+        # but n is still less than the list of words.
+        # Also need to change that funky 'REJECT' to something that
+        # is not a string
         words = set()
-        while len(words) < n:
+        counter = 0
+        while len(words) < n and counter < n * 3:
             rule = select(self.ruleset)
             word = self.apply_filters(self.run_rule(rule))
             if word != 'REJECT':
-                words.add(word)
+                if word in words:
+                    counter += 1
+                else:
+                    words.add(word)
+                    counter += 1
+
         words = list(words)
         if not unsorted:
             if self.sorter is not None:
@@ -212,7 +230,7 @@ class SoundSystem:
         return words
 
 
-def textify(phsys, sentences=11):
+def textify(phsys, sentences=11) -> str:
     """Generate a fake paragraph of text from a sound system."""
     text = ""
     for i in range(sentences):
@@ -226,7 +244,7 @@ def textify(phsys, sentences=11):
             text += " " + phsys.generate(1, unsorted=True)[0]
             if j == comma:
                 text += ","
-        if random.randint(0, 100) <= 90:
+        if random.randint(0, 100) <= 85:
             text += ". "
         else:
             text += "? "

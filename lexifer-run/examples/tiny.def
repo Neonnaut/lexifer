@@ -1,0 +1,10 @@
+with: std-ipa-features
+
+letters: m t k e a
+
+C = t m k
+V = e a
+
+$S = CV
+
+words: $S
