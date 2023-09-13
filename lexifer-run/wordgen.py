@@ -203,6 +203,10 @@ class SoundSystem:
     def with_coronal_metathesis(self):
         self.use_coronal_metathesis = True
 
+    def get_all_possible(self):
+        for key, value in self.ruleset:
+            words = 's'
+
     def generate(self, n=10, unsorted=False):
         """Generate n unique words randomly from the rules."""
         # Need to stop the while loop if there are no more combinations

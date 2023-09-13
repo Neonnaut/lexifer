@@ -6,6 +6,38 @@ This is a fork of W. Annis's word generator. See bbrk24's [the typescript web ap
 
 I hope to add additional functionality and features to my fork of it and make the code more accessable and documented, and of course get rid of some bugs I found.
 
+# Platform specific settings for displaying results
+
+## Linux/Unix
+
+Just make sure you have Unicode enabled on your terminal. For xterms,
+You can CTRL-Mouse3 and select UTF-8 Fonts as well as Encoding to
+enable this. The options '-u8 -wc' to xterm should do this for you.
+
+Fiddle with your editor's preferences to make it use Unicode.
+
+Use the command 'lexifer' or 'lexifer.py' as you see fit.
+
+## OSX (_cough_, excuse me, macOS)
+
+Open the Terminal. In preferences, go to Profiles. With the active
+profile, go to "Advanced" and make sure the Text encoding option (near
+the bottom) is set to "Unicode (UTF-8)".
+
+If you use X11, see the Linux/Unix notes above.
+
+Use the command 'lexifer' or 'lexifer.py' as you see fit.
+
+## Windows
+
+First, you need to make your command terminal use Unicode:
+
+- Open cmd window
+- right-click top left corner and click "Properties"
+- click the "Font" tab
+- click NSimSun font
+- in cmd window, type "chcp 65001" to change the encoding to UTF-7/8
+
 # Generating words
 
 - Change the dict in the settings.py file to what you want and run lexifer-run as a module, e.g: `python lexifer.run`
@@ -177,7 +209,11 @@ table option.
 `one_per_line`:
 
 - Gets stuck in a while loop, need to display "Could only generate 4 words (14 requested)."
-- "You cannot currently combine `?` and "!" options."
+- "You cannot currently combine `?` and `!` options."
 - "Make sure there are no letters in your phoneme classes which don't
   occur in the `letters:` directive, or you'll get very strangly shaped
   words! Some day I'll write something to fix this."
+- It should be possible to set it so that every phoneme doesn't have to have it's own weight
+- "Macros _must_ be defined before the `words:` lines in which they are
+  used."
+- It is annoying that some categories require `=` and others require `:`

@@ -1,0 +1,14 @@
+A = m d b ŋ n j w k y ñ 
+L = n r l y ñ r̈
+C = m d ŋ n k b w j y ñ r l r̈ y mb yb lb rb r̈b nj yj lj ŋk yk lk rk r̈k mm ym lm rm r̈m rn nn yn yn rn r̈n ŋŋ lŋ rŋ r̈ŋ ymb lmb rmb r̈mb ynd rnd r̈nd lñy yŋk lŋk rŋk r̈ŋk bw dw kw mw nw ŋw mbw ybw lbw rbw r̈bw nkw ykw lkw rkw r̈kw mmw ymw lmw rmw r̈mw ŋŋw lŋw rŋw r̈ŋw ymbw lmbw rmbw r̈mbw yndw rndw r̈ndw yŋkw lŋkw rŋkw r̈ŋkw
+
+V = a:10 i:5 u:3 o:1
+W = a:10 i:6 u:3
+
+$A = WCV
+$B = AV
+$C = CV
+$D = CWL?
+$E = AW
+
+words: $B$B$EL? $A$EL? $A$B$EL? $A$B$B$EL? $A$B$B$B$EL? $A$C$C$C$DL? $A$DL? $B$C$DL? $A$C$DL? $A$C$C$DL?

@@ -3,8 +3,8 @@ with: std-ipa-features
 letters: m t k e a
 
 C = t m k
-V = e a
+V = e:500 a:1
 
-$S = CV
+$S = CV VC
 
 words: $S

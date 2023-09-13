@@ -23,7 +23,7 @@ class WeightedSelector(object):
             tmp += self.weights[i]
             if pick < tmp:
                 return self.keys[i]
-        return 'woo!'
+        return 'this shouldn\'t happen'
 
     def __iter__(self):
         return iter(self.keys)

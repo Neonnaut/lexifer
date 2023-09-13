@@ -1,34 +1,33 @@
-with: std-ipa-features coronal-metathesis
+with: std-digraph-features
 
-letters: a b d e g h i k l m n ñ ŋ o p r s t u w y ʔ
-         
+letters: a b ch d e g h i j k l m n ñ ŋ o p r s t u w y Ꞌ         
 
-C = t n k m l r d h s w b y p ñ g ŋ
-D = ŋ ʔ
+C = t n k m l ch r d h w b s y j p ñ g ŋ 
+D = ŋ Ꞌ
 V = a i e u o
 
 $S = CVD?
 $Z = C?VD?
 
-words: $Z?$SV?$S $Z?$S V?$S$Z? V?$S$S$S V?$S$S$S$Z?$S
+words: $S$S$S $S$Z?$S$S $Z?$SV?$S $S$S$S $S$S$S$Z?$S $S?Z?$S$S$S$S
 
-number of words: 5
+# number of words: 5
+
+## Final-consonant - consonant assimilation rules
+% m  n  ñ  ŋ  l  p  t  k  s  ch  j  h  b  d  g  r  y  w
+Ꞌ +  +  +  +  +  pp tt kk ss ch  j  +  +  +  +  +  +  -
+ŋ mm nn ññ ŋŋ ll mp nt +  ns nch nj ŋŋ mb nd +  nr ññ +
 
 ## Vowel clusters / allowed hiatus
-## aa, ai, ee, ei, ia, ie, io, oo, ua, uo, 
+## aa, ai, ee, ei, ia, ie, io, oo, oi, ou, ua
 % a  e  i  o  u 
 a +  -  +  -  +
 e -  +  +  -  -
-i +  +  -  -  -
-o -  -  +  +  +
-u -  -  -  -  -
-
-## Final-consonant - consonant assimilation rules
-% m  n  ɲ  ŋ  l  p  t  k  s  h  b  d  g  r  y  w
-ʔ +  +  +  +  +  pp tt kk ss +  +  +  +  +  +  -
-ŋ mm nn ɲɲ ŋŋ ll mp nt +  ns ŋŋ mb nd +  nr ɲɲ +
+i +  +  -  +  -
+o -  -  +  +  -
+u -  -  -  +  -
 
 # haplology
 reject: (..+)\1+
 
-reject: wu yi VVʔ
+reject: wu yi VVꞌ

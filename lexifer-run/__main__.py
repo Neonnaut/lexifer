@@ -1,13 +1,19 @@
 import os
 import textwrap
 
+
+
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 from phone_define_parser import PhonologyDefinition
 from wordgen import textify
 from settings import ARGUMENTS
 
+from pyuca.collator import Collator
+c = Collator("pyuca/allkeys.txt")
+sorted_words = sorted(["z","ä","a","á","ê"], key=c.sort_key)
 
+print(sorted_words)
 
 
 def main():
@@ -18,14 +24,14 @@ def main():
 
 
 def generate_words(pd:PhonologyDefinition) -> str:
-    """Example function with PEP 484 type annotations.
+    """.
 
     Args:
         param1 (int): The first parameter.
         param2: The second parameter.
 
     Returns:
-        The return value. True for success, False otherwise.
+        Returns a string of words.
     """
     if not ARGUMENTS.get('number'):
         # Prints out a paragraph of text.
@@ -45,14 +51,7 @@ def generate_words(pd:PhonologyDefinition) -> str:
                     if word
                 ])
             else:
-                return textwrap.wrap('\n'.join([
-                    word
-                    for word in words
-                    if word
-                ]))
-            
-                words = textwrap.wrap(" ".join(words), 70)
-                print("\n".join(words), file=utf8stdout)
+                return textify(pd.sound_system, 25)
 
 def print_results(text:str) -> None:
     # Hack to make print stop whining about encodings.
