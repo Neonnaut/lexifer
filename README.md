@@ -217,3 +217,4 @@ table option.
 - "Macros _must_ be defined before the `words:` lines in which they are
   used."
 - It is annoying that some categories require `=` and others require `:`
+- It should be possible to use a filter that specifies an element must be t the start or end of a word/sylable. Perhaps, in this imaginary system I'm thing of, each generated letter of a word would have meta-information / object attributes of POS, is at the end of a word, is at the end of a syllable
